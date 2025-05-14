@@ -1,0 +1,43 @@
+name: Mi primer Pipeline
+
+on:
+
+#Ejecutar cada que se realice un push
+  push: 
+    branches:
+    - main
+    - release/*
+  pull_request:
+    types: [openes, synchronize, reopened, review_requested]
+    branches:
+    - main
+
+  #Ejecutar de manera programada
+  schedule:
+    - cron: "0 2 * * 1-5"  
+
+  #Permitir ejecutar manualmente
+  workflow_dispatch:
+
+
+jobs:
+  correr-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Realizamos un checkout a la rama
+        uses: actions/checkout@v2
+
+      - name: usamos Node.js 20.x
+        uses: actions/setup-node@v
+        with: 
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Instalamos depedencias y realizamos el build
+        run: |
+          npm install 
+          npm run build --if-present
+
+          
+          
